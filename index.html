@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IoT Relay Control</title>
+</head>
+<body>
+    <h1>IoT Relay Control (Shardeum)</h1>
+    <button onclick="toggle(true)">Turn ON</button>
+    <button onclick="toggle(false)">Turn OFF</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+    <script>
+        const contractAddress = "0xe8C3DF29503a5c87b2dd06cd7Ab512d74761C363";
+        const abi = [
+            {"inputs":[{"internalType":"bool","name":"_state","type":"bool"}],"name":"toggleRelay","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"relayState","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}
+        ];
+
+        async function toggle(state) {
+            if (typeof window.ethereum === 'undefined') {
+                alert('MetaMask not detected');
+                return;
+            }
+            const web3 = new Web3(window.ethereum);
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const accounts = await web3.eth.getAccounts();
+            const contract = new web3.eth.Contract(abi, contractAddress);
+            await contract.methods.toggleRelay(state).send({ from: accounts[0] });
+            alert("Relay state updated!");
+        }
+    </script>
+</body>
+</html>
